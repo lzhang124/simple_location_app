@@ -405,6 +405,7 @@
 				466DD3E41ABBCEF400A50AAB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		466DD3E51ABBCEF400A50AAB /* Build configuration list for PBXNativeTarget "LocationTests" */ = {
 			isa = XCConfigurationList;
@@ -413,6 +414,7 @@
 				466DD3E71ABBCEF400A50AAB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
