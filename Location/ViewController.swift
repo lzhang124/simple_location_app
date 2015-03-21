@@ -37,14 +37,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestAlwaysAuthorization()
+        locationManager.delegate = self
 
         map.delegate = self
         map.mapType = MKMapType.Standard
         map.showsUserLocation = true
-        map.setUserTrackingMode(MKUserTrackingMode.Follow, animated: true)
+        
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            map.setUserTrackingMode(MKUserTrackingMode.Follow, animated: true)
+        }
     }
     
     func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
@@ -56,8 +59,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         locationLabel.text = "\(newData)"
         
         map.setUserTrackingMode(MKUserTrackingMode.None, animated: false)
-        let spanX = 0.007
-        let spanY = 0.007
+        let spanX = 0.005
+        let spanY = 0.005
         var newRegion = MKCoordinateRegion(center: map.userLocation.coordinate, span: MKCoordinateSpanMake(spanX, spanY))
         map.setRegion(newRegion, animated: true)
         
@@ -94,7 +97,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         let url: NSURL! = NSURL(fileURLWithPath: fileName)
         
         var data = ",\n".join(allData.map { "\($0.0),\($0.1),\($0.2),\($0.3)" })
-        println(data)
         
         data.writeToURL(url, atomically: true, encoding: NSUTF8StringEncoding, error: nil)
         if url != nil {
