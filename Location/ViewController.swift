@@ -19,6 +19,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         if button.titleLabel?.text == "Start" {
             map.removeOverlays(map.overlays)
             allCoordinates = []
+            allData = []
             button.setTitle("Stop", forState: UIControlState.Normal)
             locationManager.startUpdatingLocation()
         } else {
@@ -37,15 +38,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        locationManager.requestAlwaysAuthorization()
         locationManager.delegate = self
-
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestAlwaysAuthorization()
+        
         map.delegate = self
         map.mapType = MKMapType.Standard
-        map.showsUserLocation = true
-        
-        if CLLocationManager.locationServicesEnabled() {
-            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+    }
+    
+    func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        if status == CLAuthorizationStatus.AuthorizedAlways {
+            map.showsUserLocation = true
             map.setUserTrackingMode(MKUserTrackingMode.Follow, animated: true)
         }
     }
@@ -58,7 +61,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         allData.append(newData)
         locationLabel.text = "\(newData)"
         
-        map.setUserTrackingMode(MKUserTrackingMode.None, animated: false)
+        map.setUserTrackingMode(MKUserTrackingMode.None, animated: true)
         let spanX = 0.005
         let spanY = 0.005
         var newRegion = MKCoordinateRegion(center: map.userLocation.coordinate, span: MKCoordinateSpanMake(spanX, spanY))
