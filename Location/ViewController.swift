@@ -10,7 +10,7 @@ import UIKit
 import CoreLocation
 import MapKit
 
-class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
+class ViewController: UIViewController, UIDocumentInteractionControllerDelegate, CLLocationManagerDelegate, MKMapViewDelegate {
 
     @IBOutlet weak var map: MKMapView!
     @IBOutlet weak var locationLabel: UILabel!
@@ -21,11 +21,35 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             map.removeOverlays(map.overlays)
             allLocations = []
             button.setTitle("Stop", forState: UIControlState.Normal)
+            map.setUserTrackingMode(MKUserTrackingMode.Follow, animated: true)
             locationManager.startUpdatingLocation()
         } else {
-            locationLabel.text = "Location Information"
+            locationLabel.text = "[Location Information]"
             button.setTitle("Start", forState: UIControlState.Normal)
             locationManager.stopUpdatingLocation()
+            
+            exportToCSV(self)
+        }
+    }
+    
+    func exportToCSV(delegate: UIDocumentInteractionControllerDelegate) {
+        let fileName = NSTemporaryDirectory().stringByAppendingPathComponent("location.csv")
+        let url: NSURL! = NSURL(fileURLWithPath: fileName)
+        
+        var data = reduce(allLocations, "") { (existing, toAppend) in
+            if existing.isEmpty {
+                return "\(toAppend)"
+            } else {
+                return "\(existing),\n\(toAppend)"
+            }
+        }
+        
+        data.writeToURL(url, atomically: true, encoding: NSUTF8StringEncoding, error: nil)
+        if url != nil {
+            let documentController = UIDocumentInteractionController(URL: url)
+            documentController.UTI = "public.comma-separated-values-text"
+            documentController.delegate = delegate
+            documentController.presentPreviewAnimated(true)
         }
     }
     
@@ -36,15 +60,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Setup the location manager
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestAlwaysAuthorization()
 
-        // Setup the map view
         map.delegate = self
         map.mapType = MKMapType.Standard
         map.showsUserLocation = true
+        map.setUserTrackingMode(MKUserTrackingMode.Follow, animated: true)
     }
     
     func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
