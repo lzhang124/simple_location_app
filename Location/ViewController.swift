@@ -15,9 +15,23 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     @IBOutlet weak var map: MKMapView!
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var button: UIButton!
+    @IBAction func buttonPressed(sender: AnyObject) {
+
+        if button.titleLabel?.text == "Start" {
+            map.removeOverlays(map.overlays)
+            allLocations = []
+            button.setTitle("Stop", forState: UIControlState.Normal)
+            locationManager.startUpdatingLocation()
+        } else {
+            locationLabel.text = "Location Information"
+            button.setTitle("Start", forState: UIControlState.Normal)
+            locationManager.stopUpdatingLocation()
+        }
+    }
     
     var locationManager = CLLocationManager()
     var allLocations: [CLLocation] = []
+    var allCoordinates: [CLLocationCoordinate2D] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,7 +40,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestAlwaysAuthorization()
-        locationManager.startUpdatingLocation()
 
         // Setup the map view
         map.delegate = self
