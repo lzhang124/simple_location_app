@@ -17,15 +17,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="j10-c2-bqs">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="514"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="600" id="vst-Bq-dr6"/>
-                                    <constraint firstAttribute="height" constant="514" id="x5S-wt-Axz"/>
-                                </constraints>
-                            </mapView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a3E-k7-HyA">
-                                <rect key="frame" x="16" y="524" width="568" height="75"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location Information" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a3E-k7-HyA">
+                                <rect key="frame" x="16" y="524" width="525" height="75"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="75" id="edv-pP-yQp"/>
                                 </constraints>
@@ -33,27 +26,60 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jsI-5t-y6P">
+                                <rect key="frame" x="551" y="547" width="33" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="33" id="O9Z-7c-sBv"/>
+                                    <constraint firstAttribute="height" constant="30" id="iHe-64-ekW"/>
+                                </constraints>
+                                <state key="normal" title="Start">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="j10-c2-bqs">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="524"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="600" id="vst-Bq-dr6"/>
+                                    <constraint firstAttribute="height" constant="514" id="x5S-wt-Axz"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="x5S-wt-Axz"/>
+                                    </mask>
+                                </variation>
+                            </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="centerX" secondItem="j10-c2-bqs" secondAttribute="centerX" id="2ED-xg-HCr"/>
+                            <constraint firstItem="j10-c2-bqs" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="-20" id="5Sx-tR-1EQ"/>
                             <constraint firstAttribute="centerY" secondItem="a3E-k7-HyA" secondAttribute="centerY" constant="-261.5" id="77Z-7W-e72"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="a3E-k7-HyA" secondAttribute="bottom" constant="1" id="BP5-eU-21y"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="jsI-5t-y6P" secondAttribute="trailing" id="BpY-Dc-iUc"/>
                             <constraint firstAttribute="centerX" secondItem="a3E-k7-HyA" secondAttribute="centerX" id="GLH-8l-7Uv"/>
+                            <constraint firstItem="jsI-5t-y6P" firstAttribute="leading" secondItem="a3E-k7-HyA" secondAttribute="trailing" constant="10" id="SZS-vn-Xsa"/>
                             <constraint firstItem="a3E-k7-HyA" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" id="UDA-3S-wMe"/>
+                            <constraint firstItem="jsI-5t-y6P" firstAttribute="top" secondItem="j10-c2-bqs" secondAttribute="bottom" constant="8" symbolic="YES" id="YbO-X1-pVm"/>
                             <constraint firstAttribute="trailingMargin" secondItem="a3E-k7-HyA" secondAttribute="trailing" id="eM8-IG-wTS"/>
-                            <constraint firstItem="a3E-k7-HyA" firstAttribute="top" secondItem="j10-c2-bqs" secondAttribute="bottom" constant="10" id="ez1-q5-t7c"/>
+                            <constraint firstItem="a3E-k7-HyA" firstAttribute="top" secondItem="j10-c2-bqs" secondAttribute="bottom" id="ez1-q5-t7c"/>
                             <constraint firstAttribute="centerY" secondItem="a3E-k7-HyA" secondAttribute="centerY" constant="-224" id="fqv-Ro-H9V"/>
+                            <constraint firstItem="a3E-k7-HyA" firstAttribute="centerY" secondItem="jsI-5t-y6P" secondAttribute="centerY" constant="-0.5" id="lFG-9h-rvM"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="77Z-7W-e72"/>
+                                <exclude reference="GLH-8l-7Uv"/>
+                                <exclude reference="eM8-IG-wTS"/>
                                 <exclude reference="fqv-Ro-H9V"/>
+                                <exclude reference="YbO-X1-pVm"/>
                             </mask>
                         </variation>
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <connections>
-                        <outlet property="theLabel" destination="a3E-k7-HyA" id="cnH-5K-03e"/>
-                        <outlet property="theMap" destination="j10-c2-bqs" id="Eqz-VR-s2M"/>
+                        <outlet property="button" destination="jsI-5t-y6P" id="mby-rH-Ugz"/>
+                        <outlet property="locationLabel" destination="a3E-k7-HyA" id="YfD-aF-Guf"/>
+                        <outlet property="map" destination="j10-c2-bqs" id="uGc-mO-4R1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>

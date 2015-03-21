@@ -12,53 +12,55 @@ import MapKit
 
 class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
 
-    @IBOutlet weak var theMap: MKMapView!
-    @IBOutlet weak var theLabel: UILabel!
+    @IBOutlet weak var map: MKMapView!
+    @IBOutlet weak var locationLabel: UILabel!
+    @IBOutlet weak var button: UIButton!
     
-    var manager:CLLocationManager!
-    var myLocations: [CLLocation] = []
+    var locationManager = CLLocationManager()
+    var allLocations: [CLLocation] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Setup the location manager
-        manager = CLLocationManager()
-        manager.delegate = self
-        manager.desiredAccuracy = kCLLocationAccuracyBest
-        manager.requestAlwaysAuthorization()
-        manager.startUpdatingLocation()
         
+        // Setup the location manager
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestAlwaysAuthorization()
+        locationManager.startUpdatingLocation()
+
         // Setup the map view
-        theMap.delegate = self
-        theMap.mapType = MKMapType.Standard
-        theMap.showsUserLocation = true
+        map.delegate = self
+        map.mapType = MKMapType.Standard
+        map.showsUserLocation = true
     }
     
     func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
-        theLabel.text = "\(locations[0])"
-        myLocations.append(locations[0] as CLLocation)
+        locationLabel.text = "\(locations[0])"
+        allLocations.append(locations[0] as CLLocation)
         
         let spanX = 0.007
         let spanY = 0.007
-        var newRegion = MKCoordinateRegion(center: theMap.userLocation.coordinate, span: MKCoordinateSpanMake(spanX, spanY))
-        theMap.setRegion(newRegion, animated: true)
+        var newRegion = MKCoordinateRegion(center: map.userLocation.coordinate, span: MKCoordinateSpanMake(spanX, spanY))
+        map.setRegion(newRegion, animated: true)
         
-        if (myLocations.count > 1){
-            var sourceIndex = myLocations.count - 1
-            var destinationIndex = myLocations.count - 2
+        if (allLocations.count > 1){
+            var sourceIndex = allLocations.count - 1
+            var destinationIndex = allLocations.count - 2
             
-            let p1 = myLocations[sourceIndex].coordinate
-            let p2 = myLocations[destinationIndex].coordinate
+            let p1 = allLocations[sourceIndex].coordinate
+            let p2 = allLocations[destinationIndex].coordinate
             var line = [p1, p2]
             
             var polyline = MKPolyline(coordinates: &line, count: line.count)
-            theMap.addOverlay(polyline)
+            map.addOverlay(polyline)
         }
     }
     
     func mapView(mapView: MKMapView!, rendererForOverlay overlay: MKOverlay!) -> MKOverlayRenderer! {
         if overlay is MKPolyline {
+            var lineColor = UIColor(red: 0.016, green: 0.478, blue: 0.984, alpha: 1.000)
             var polylineRenderer = MKPolylineRenderer(overlay: overlay)
-            polylineRenderer.strokeColor = UIColor.cyanColor()
+            polylineRenderer.strokeColor = lineColor
             polylineRenderer.lineWidth = 4
             return polylineRenderer
         }
