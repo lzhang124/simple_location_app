@@ -10,7 +10,7 @@ import UIKit
 import CoreLocation
 import MapKit
 
-class ViewController: UIViewController, UIDocumentInteractionControllerDelegate, CLLocationManagerDelegate, MKMapViewDelegate {
+class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UIDocumentInteractionControllerDelegate {
 
     @IBOutlet weak var map: MKMapView!
     @IBOutlet weak var locationLabel: UILabel!
@@ -18,21 +18,21 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     @IBAction func buttonPressed(sender: AnyObject) {
         if button.titleLabel?.text == "Start" {
             map.removeOverlays(map.overlays)
-            allLocations = []
+            allCoordinates = []
             button.setTitle("Stop", forState: UIControlState.Normal)
             locationManager.startUpdatingLocation()
         } else {
-            locationLabel.text = "[Location Information]"
+            locationLabel.text = "<Location Information>"
             button.setTitle("Start", forState: UIControlState.Normal)
             locationManager.stopUpdatingLocation()
             map.setUserTrackingMode(MKUserTrackingMode.Follow, animated: true)
-            println(allLocations)
-//            exportToCSV(self)
+            exportToCSV(self)
         }
     }
     
     var locationManager = CLLocationManager()
-    var allLocations: [(CLLocationCoordinate2D, CLLocationAccuracy, CLLocationAccuracy)] = []
+    var allCoordinates: [CLLocationCoordinate2D] = []
+    var allData: [(CLLocationDegrees, CLLocationDegrees, CLLocationAccuracy, CLLocationAccuracy)] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,10 +48,12 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     }
     
     func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
-        var newLocation = locations[0] as CLLocation
-        let newCoordinate = (newLocation.coordinate, newLocation.horizontalAccuracy, newLocation.verticalAccuracy)
-        locationLabel.text = "\(newLocation)"
-        allLocations.append(newCoordinate)
+        let newLocation = locations[0] as CLLocation
+        allCoordinates.append(newLocation.coordinate)
+        
+        let newData = (newLocation.coordinate.latitude, newLocation.coordinate.longitude, newLocation.horizontalAccuracy, newLocation.verticalAccuracy)
+        allData.append(newData)
+        locationLabel.text = "\(newData)"
         
         map.setUserTrackingMode(MKUserTrackingMode.None, animated: false)
         let spanX = 0.007
@@ -59,12 +61,12 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
         var newRegion = MKCoordinateRegion(center: map.userLocation.coordinate, span: MKCoordinateSpanMake(spanX, spanY))
         map.setRegion(newRegion, animated: true)
         
-        if (allLocations.count > 1){
-            var start = allLocations.count - 1
-            var end = allLocations.count - 2
+        if (allCoordinates.count > 1){
+            var start = allCoordinates.count - 1
+            var end = allCoordinates.count - 2
             
-            let p1 = allLocations[start].0
-            let p2 = allLocations[end].0
+            let p1 = allCoordinates[start]
+            let p2 = allCoordinates[end]
             var line = [p1, p2]
             
             var polyline = MKPolyline(coordinates: &line, count: line.count)
@@ -83,17 +85,16 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
         return nil
     }
     
+    func documentInteractionControllerViewControllerForPreview(controller: UIDocumentInteractionController) -> UIViewController! {
+        return self
+    }
+    
     func exportToCSV(delegate: UIDocumentInteractionControllerDelegate) {
         let fileName = NSTemporaryDirectory().stringByAppendingPathComponent("location.csv")
         let url: NSURL! = NSURL(fileURLWithPath: fileName)
         
-        var data = reduce(allLocations, "") { (existing, toAppend) in
-            if existing.isEmpty {
-                return "\(toAppend)"
-            } else {
-                return "\(existing),\n\(toAppend)"
-            }
-        }
+        var data = ",\n".join(allData.map { "\($0.0),\($0.1),\($0.2),\($0.3)" })
+        println(data)
         
         data.writeToURL(url, atomically: true, encoding: NSUTF8StringEncoding, error: nil)
         if url != nil {

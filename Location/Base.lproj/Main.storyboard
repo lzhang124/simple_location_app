@@ -17,8 +17,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="[Location Information]" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a3E-k7-HyA">
-                                <rect key="frame" x="16" y="524" width="525" height="75"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="&lt;Location Information&gt;" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a3E-k7-HyA">
+                                <rect key="frame" x="16" y="524" width="479" height="75"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="75" id="edv-pP-yQp"/>
                                 </constraints>
@@ -27,7 +27,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jsI-5t-y6P">
-                                <rect key="frame" x="551" y="547" width="33" height="30"/>
+                                <rect key="frame" x="531" y="547" width="33" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="33" id="O9Z-7c-sBv"/>
                                     <constraint firstAttribute="height" constant="30" id="iHe-64-ekW"/>
@@ -58,9 +58,9 @@
                             <constraint firstItem="j10-c2-bqs" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="-20" id="5Sx-tR-1EQ"/>
                             <constraint firstAttribute="centerY" secondItem="a3E-k7-HyA" secondAttribute="centerY" constant="-261.5" id="77Z-7W-e72"/>
                             <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="a3E-k7-HyA" secondAttribute="bottom" constant="1" id="BP5-eU-21y"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="jsI-5t-y6P" secondAttribute="trailing" id="BpY-Dc-iUc"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="jsI-5t-y6P" secondAttribute="trailing" constant="20" id="BpY-Dc-iUc"/>
                             <constraint firstAttribute="centerX" secondItem="a3E-k7-HyA" secondAttribute="centerX" id="GLH-8l-7Uv"/>
-                            <constraint firstItem="jsI-5t-y6P" firstAttribute="leading" secondItem="a3E-k7-HyA" secondAttribute="trailing" constant="10" id="SZS-vn-Xsa"/>
+                            <constraint firstItem="jsI-5t-y6P" firstAttribute="leading" secondItem="a3E-k7-HyA" secondAttribute="trailing" constant="36" id="SZS-vn-Xsa"/>
                             <constraint firstItem="a3E-k7-HyA" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" id="UDA-3S-wMe"/>
                             <constraint firstItem="jsI-5t-y6P" firstAttribute="top" secondItem="j10-c2-bqs" secondAttribute="bottom" constant="8" symbolic="YES" id="YbO-X1-pVm"/>
                             <constraint firstAttribute="trailingMargin" secondItem="a3E-k7-HyA" secondAttribute="trailing" id="eM8-IG-wTS"/>
