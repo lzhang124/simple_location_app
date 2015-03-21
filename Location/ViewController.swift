@@ -16,20 +16,71 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var button: UIButton!
     @IBAction func buttonPressed(sender: AnyObject) {
-
         if button.titleLabel?.text == "Start" {
             map.removeOverlays(map.overlays)
             allLocations = []
             button.setTitle("Stop", forState: UIControlState.Normal)
-            map.setUserTrackingMode(MKUserTrackingMode.Follow, animated: true)
             locationManager.startUpdatingLocation()
         } else {
             locationLabel.text = "[Location Information]"
             button.setTitle("Start", forState: UIControlState.Normal)
             locationManager.stopUpdatingLocation()
-            
-            exportToCSV(self)
+            map.setUserTrackingMode(MKUserTrackingMode.Follow, animated: true)
+            println(allLocations)
+//            exportToCSV(self)
         }
+    }
+    
+    var locationManager = CLLocationManager()
+    var allLocations: [(CLLocationCoordinate2D, CLLocationAccuracy, CLLocationAccuracy)] = []
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestAlwaysAuthorization()
+
+        map.delegate = self
+        map.mapType = MKMapType.Standard
+        map.showsUserLocation = true
+        map.setUserTrackingMode(MKUserTrackingMode.Follow, animated: true)
+    }
+    
+    func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
+        var newLocation = locations[0] as CLLocation
+        let newCoordinate = (newLocation.coordinate, newLocation.horizontalAccuracy, newLocation.verticalAccuracy)
+        locationLabel.text = "\(newLocation)"
+        allLocations.append(newCoordinate)
+        
+        map.setUserTrackingMode(MKUserTrackingMode.None, animated: false)
+        let spanX = 0.007
+        let spanY = 0.007
+        var newRegion = MKCoordinateRegion(center: map.userLocation.coordinate, span: MKCoordinateSpanMake(spanX, spanY))
+        map.setRegion(newRegion, animated: true)
+        
+        if (allLocations.count > 1){
+            var start = allLocations.count - 1
+            var end = allLocations.count - 2
+            
+            let p1 = allLocations[start].0
+            let p2 = allLocations[end].0
+            var line = [p1, p2]
+            
+            var polyline = MKPolyline(coordinates: &line, count: line.count)
+            map.addOverlay(polyline)
+        }
+    }
+    
+    func mapView(mapView: MKMapView!, rendererForOverlay overlay: MKOverlay!) -> MKOverlayRenderer! {
+        if overlay is MKPolyline {
+            var lineColor = UIColor(red: 0.016, green: 0.478, blue: 0.984, alpha: 1.000)
+            var polylineRenderer = MKPolylineRenderer(overlay: overlay)
+            polylineRenderer.strokeColor = lineColor
+            polylineRenderer.lineWidth = 4
+            return polylineRenderer
+        }
+        return nil
     }
     
     func exportToCSV(delegate: UIDocumentInteractionControllerDelegate) {
@@ -51,56 +102,6 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
             documentController.delegate = delegate
             documentController.presentPreviewAnimated(true)
         }
-    }
-    
-    var locationManager = CLLocationManager()
-    var allLocations: [CLLocation] = []
-    var allCoordinates: [CLLocationCoordinate2D] = []
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestAlwaysAuthorization()
-
-        map.delegate = self
-        map.mapType = MKMapType.Standard
-        map.showsUserLocation = true
-        map.setUserTrackingMode(MKUserTrackingMode.Follow, animated: true)
-    }
-    
-    func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
-        locationLabel.text = "\(locations[0])"
-        allLocations.append(locations[0] as CLLocation)
-        
-        let spanX = 0.007
-        let spanY = 0.007
-        var newRegion = MKCoordinateRegion(center: map.userLocation.coordinate, span: MKCoordinateSpanMake(spanX, spanY))
-        map.setRegion(newRegion, animated: true)
-        
-        if (allLocations.count > 1){
-            var sourceIndex = allLocations.count - 1
-            var destinationIndex = allLocations.count - 2
-            
-            let p1 = allLocations[sourceIndex].coordinate
-            let p2 = allLocations[destinationIndex].coordinate
-            var line = [p1, p2]
-            
-            var polyline = MKPolyline(coordinates: &line, count: line.count)
-            map.addOverlay(polyline)
-        }
-    }
-    
-    func mapView(mapView: MKMapView!, rendererForOverlay overlay: MKOverlay!) -> MKOverlayRenderer! {
-        if overlay is MKPolyline {
-            var lineColor = UIColor(red: 0.016, green: 0.478, blue: 0.984, alpha: 1.000)
-            var polylineRenderer = MKPolylineRenderer(overlay: overlay)
-            polylineRenderer.strokeColor = lineColor
-            polylineRenderer.lineWidth = 4
-            return polylineRenderer
-        }
-        return nil
     }
 }
 
