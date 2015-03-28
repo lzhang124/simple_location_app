@@ -33,7 +33,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     var locationManager = CLLocationManager()
     var allCoordinates: [CLLocationCoordinate2D] = []
-    var allData: [(CLLocationDegrees, CLLocationDegrees, CLLocationAccuracy, CLLocationAccuracy)] = []
+    var allData: [(CLLocationDegrees, CLLocationDegrees, CLLocationAccuracy)] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,7 +57,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         let newLocation = locations[0] as CLLocation
         allCoordinates.append(newLocation.coordinate)
         
-        let newData = (newLocation.coordinate.latitude, newLocation.coordinate.longitude, newLocation.horizontalAccuracy, newLocation.verticalAccuracy)
+        let newData = (newLocation.coordinate.latitude, newLocation.coordinate.longitude, newLocation.horizontalAccuracy)
         allData.append(newData)
         locationLabel.text = "\(newData)"
         
@@ -66,6 +66,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         let spanY = 0.005
         var newRegion = MKCoordinateRegion(center: map.userLocation.coordinate, span: MKCoordinateSpanMake(spanX, spanY))
         map.setRegion(newRegion, animated: true)
+        
+        var circle = MKCircle(centerCoordinate: newLocation.coordinate, radius: newData.2)
+        map.addOverlay(circle)
         
         if (allCoordinates.count > 1){
             var start = allCoordinates.count - 1
@@ -88,6 +91,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             polylineRenderer.lineWidth = 4
             return polylineRenderer
         }
+
+        if overlay is MKCircle {
+            var fillColor = UIColor(red: 0.016, green: 0.478, blue: 0.984, alpha: 0.050)
+            var circleRenderer = MKCircleRenderer(overlay: overlay)
+            circleRenderer.fillColor = fillColor
+            return circleRenderer
+        }
+        
         return nil
     }
     
@@ -99,7 +110,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         let fileName = NSTemporaryDirectory().stringByAppendingPathComponent("location.csv")
         let url: NSURL! = NSURL(fileURLWithPath: fileName)
         
-        var data = ",\n".join(allData.map { "\($0.0),\($0.1),\($0.2),\($0.3)" })
+        var data = ",\n".join(allData.map { "\($0.0),\($0.1),\($0.2)" })
         
         data.writeToURL(url, atomically: true, encoding: NSUTF8StringEncoding, error: nil)
         if url != nil {
