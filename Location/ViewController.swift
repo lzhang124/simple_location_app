@@ -13,7 +13,7 @@ import MapKit
 class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UIDocumentInteractionControllerDelegate {
 
     @IBOutlet weak var map: MKMapView!
-    @IBOutlet weak var locationLabel: UILabel!
+    @IBOutlet weak var picker: UIPickerView!
     @IBOutlet weak var button: UIButton!
     @IBAction func buttonPressed(sender: AnyObject) {
         if button.titleLabel?.text == "Start" {
@@ -23,7 +23,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             button.setTitle("Stop", forState: UIControlState.Normal)
             locationManager.startUpdatingLocation()
         } else {
-            locationLabel.text = "<Location Information>"
             button.setTitle("Start", forState: UIControlState.Normal)
             locationManager.stopUpdatingLocation()
             map.setUserTrackingMode(MKUserTrackingMode.Follow, animated: true)
@@ -34,23 +33,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     var locationManager = CLLocationManager()
     var allCoordinates: [CLLocationCoordinate2D] = []
     var allData: [(CLLocationDegrees, CLLocationDegrees, CLLocationAccuracy)] = []
+    var types = ["Cell ID", "WiFi", "GPS"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestAlwaysAuthorization()
+        locationManager.requestWhenInUseAuthorization()
         
         map.delegate = self
         map.mapType = MKMapType.Standard
-    }
-    
-    func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
-        if status == CLAuthorizationStatus.AuthorizedAlways {
-            map.showsUserLocation = true
-            map.setUserTrackingMode(MKUserTrackingMode.Follow, animated: true)
-        }
+        map.showsUserLocation = true
+        map.setUserTrackingMode(MKUserTrackingMode.Follow, animated: true)
     }
     
     func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
@@ -59,7 +53,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         
         let newData = (newLocation.coordinate.latitude, newLocation.coordinate.longitude, newLocation.horizontalAccuracy)
         allData.append(newData)
-        locationLabel.text = "\(newData)"
         
         map.setUserTrackingMode(MKUserTrackingMode.None, animated: true)
         let spanX = 0.005
@@ -69,7 +62,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         
         var circle = MKCircle(centerCoordinate: newLocation.coordinate, radius: newData.2)
         map.addOverlay(circle)
-        
+
         if (allCoordinates.count > 1){
             var start = allCoordinates.count - 1
             var end = allCoordinates.count - 2
@@ -79,11 +72,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             var line = [p1, p2]
             
             var polyline = MKPolyline(coordinates: &line, count: line.count)
-            map.addOverlay(polyline)
+            map.addOverlay(polyline, level: MKOverlayLevel.AboveLabels)
         }
     }
     
     func mapView(mapView: MKMapView!, rendererForOverlay overlay: MKOverlay!) -> MKOverlayRenderer! {
+        if overlay is MKCircle {
+            var fillColor = UIColor(red: 0.016, green: 0.478, blue: 0.984, alpha: 0.010)
+            var circleRenderer = MKCircleRenderer(overlay: overlay)
+            circleRenderer.fillColor = fillColor
+            return circleRenderer
+        }
+        
         if overlay is MKPolyline {
             var lineColor = UIColor(red: 0.016, green: 0.478, blue: 0.984, alpha: 1.000)
             var polylineRenderer = MKPolylineRenderer(overlay: overlay)
@@ -91,15 +91,36 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             polylineRenderer.lineWidth = 4
             return polylineRenderer
         }
-
-        if overlay is MKCircle {
-            var fillColor = UIColor(red: 0.016, green: 0.478, blue: 0.984, alpha: 0.050)
-            var circleRenderer = MKCircleRenderer(overlay: overlay)
-            circleRenderer.fillColor = fillColor
-            return circleRenderer
-        }
         
         return nil
+    }
+    
+    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return types.count
+    }
+    
+    func pickerView(pickerView: UIPickerView, titleForRow row:Int, forComponent component:Int) -> String! {
+        return types[row]
+    }
+    
+    func pickerView(pickerView: UIPickerView, didSelectRow row:Int, inComponent component:Int){
+        switch(row) {
+            case 0:
+                locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
+                break
+            case 1:
+                locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+                break
+            case 2:
+                locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+                break
+            default:
+                locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        }
     }
     
     func documentInteractionControllerViewControllerForPreview(controller: UIDocumentInteractionController) -> UIViewController! {
