@@ -14,6 +14,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
 
     @IBOutlet weak var map: MKMapView!
     @IBOutlet weak var picker: UIPickerView!
+    
     @IBOutlet weak var button: UIButton!
     @IBAction func buttonPressed(sender: AnyObject) {
         if button.titleLabel?.text == "Start" {
@@ -21,19 +22,34 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             allCoordinates = []
             allData = []
             button.setTitle("Stop", forState: UIControlState.Normal)
+            pause.setTitle("Pause", forState: UIControlState.Normal)
             locationManager.startUpdatingLocation()
         } else {
             button.setTitle("Start", forState: UIControlState.Normal)
+            pause.setTitle("Show", forState: UIControlState.Normal)
             locationManager.stopUpdatingLocation()
             map.setUserTrackingMode(MKUserTrackingMode.Follow, animated: true)
             exportToCSV(self)
         }
     }
     
+    @IBOutlet weak var pause: UIButton!
+    @IBAction func pausePressed(sender: AnyObject) {
+        if pause.titleLabel?.text == "Pause" {
+            pause.setTitle("Resume", forState: UIControlState.Normal)
+            locationManager.stopUpdatingLocation()
+        } else if pause.titleLabel?.text == "Resume" {
+            pause.setTitle("Pause", forState: UIControlState.Normal)
+            locationManager.startUpdatingLocation()
+        } else {
+            exportToCSV(self)
+        }
+    }
+
     var locationManager = CLLocationManager()
     var allCoordinates: [CLLocationCoordinate2D] = []
     var allData: [(CLLocationDegrees, CLLocationDegrees, CLLocationAccuracy)] = []
-    var types = ["Cell ID", "WiFi", "GPS"]
+    var types = ["Cell ID", "WiFi", "GPS", "Best"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -78,14 +94,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     func mapView(mapView: MKMapView!, rendererForOverlay overlay: MKOverlay!) -> MKOverlayRenderer! {
         if overlay is MKCircle {
-            var fillColor = UIColor(red: 0.016, green: 0.478, blue: 0.984, alpha: 0.010)
+            var fillColor = UIColor(red: 0.016, green: 0.478, blue: 0.984, alpha: 0.030)
             var circleRenderer = MKCircleRenderer(overlay: overlay)
             circleRenderer.fillColor = fillColor
             return circleRenderer
         }
         
         if overlay is MKPolyline {
-            var lineColor = UIColor(red: 0.016, green: 0.478, blue: 0.984, alpha: 1.000)
+            var lineColor = UIColor(red: 0.106, green: 0.459, blue: 0.871, alpha: 1.000)
             var polylineRenderer = MKPolylineRenderer(overlay: overlay)
             polylineRenderer.strokeColor = lineColor
             polylineRenderer.lineWidth = 4
@@ -103,11 +119,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         return types.count
     }
     
-    func pickerView(pickerView: UIPickerView, titleForRow row:Int, forComponent component:Int) -> String! {
+    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
         return types[row]
     }
     
-    func pickerView(pickerView: UIPickerView, didSelectRow row:Int, inComponent component:Int){
+    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int){
         switch(row) {
             case 0:
                 locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
@@ -117,6 +133,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                 break
             case 2:
                 locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+                break
+            case 3:
+                locationManager.desiredAccuracy = kCLLocationAccuracyBest
                 break
             default:
                 locationManager.desiredAccuracy = kCLLocationAccuracyBest

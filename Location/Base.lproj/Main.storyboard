@@ -30,7 +30,7 @@
                                 </connections>
                             </button>
                             <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0Nb-n1-arK">
-                                <rect key="frame" x="20" y="483" width="507" height="162"/>
+                                <rect key="frame" x="20" y="483" width="431" height="162"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="162" id="0ya-qw-Xcw"/>
                                 </constraints>
@@ -50,6 +50,26 @@
                                     </mask>
                                 </variation>
                             </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lMg-tN-XdG">
+                                <rect key="frame" x="471" y="549" width="56" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="43" id="HZI-Pi-iZ1"/>
+                                    <constraint firstAttribute="width" constant="56" id="PAN-ya-zQs"/>
+                                    <constraint firstAttribute="width" constant="43" id="phr-Wi-mMp"/>
+                                </constraints>
+                                <state key="normal" title="Show">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="HZI-Pi-iZ1"/>
+                                        <exclude reference="phr-Wi-mMp"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <action selector="pausePressed:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="d5d-Dd-0f5"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -59,11 +79,14 @@
                             <constraint firstItem="0Nb-n1-arK" firstAttribute="centerY" secondItem="jsI-5t-y6P" secondAttribute="centerY" id="6eb-57-Yzr"/>
                             <constraint firstItem="jsI-5t-y6P" firstAttribute="top" secondItem="j10-c2-bqs" secondAttribute="bottom" constant="46" id="DTq-yW-6S0"/>
                             <constraint firstItem="0Nb-n1-arK" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="4" id="FMO-4q-lNy"/>
+                            <constraint firstItem="lMg-tN-XdG" firstAttribute="leading" secondItem="0Nb-n1-arK" secondAttribute="trailing" constant="20" id="LQ3-pO-dVa"/>
                             <constraint firstItem="jsI-5t-y6P" firstAttribute="top" secondItem="j10-c2-bqs" secondAttribute="bottom" constant="8" symbolic="YES" id="YbO-X1-pVm"/>
                             <constraint firstItem="jsI-5t-y6P" firstAttribute="centerY" secondItem="0Nb-n1-arK" secondAttribute="centerY" id="bxt-EY-fhj"/>
                             <constraint firstItem="0Nb-n1-arK" firstAttribute="bottom" secondItem="2fi-mo-0CV" secondAttribute="top" constant="45" id="dSx-Rg-08q"/>
                             <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="0Nb-n1-arK" secondAttribute="bottom" id="e6Y-F8-8Nz"/>
+                            <constraint firstItem="jsI-5t-y6P" firstAttribute="leading" secondItem="lMg-tN-XdG" secondAttribute="trailing" constant="20" id="fdB-ZS-Xsv"/>
                             <constraint firstAttribute="trailing" secondItem="j10-c2-bqs" secondAttribute="trailing" id="fnx-wf-jxB"/>
+                            <constraint firstItem="0Nb-n1-arK" firstAttribute="centerY" secondItem="lMg-tN-XdG" secondAttribute="centerY" id="kBs-lh-dcK"/>
                             <constraint firstItem="0Nb-n1-arK" firstAttribute="top" secondItem="j10-c2-bqs" secondAttribute="bottom" constant="-45" id="lRu-9Z-GC9"/>
                             <constraint firstItem="jsI-5t-y6P" firstAttribute="top" secondItem="j10-c2-bqs" secondAttribute="bottom" constant="23" id="oxy-ui-rhY"/>
                             <constraint firstAttribute="trailingMargin" secondItem="jsI-5t-y6P" secondAttribute="trailing" constant="4" id="uM4-Wp-WFt"/>
@@ -74,6 +97,7 @@
                                 <exclude reference="6eb-57-Yzr"/>
                                 <exclude reference="e6Y-F8-8Nz"/>
                                 <exclude reference="vXr-RO-pml"/>
+                                <exclude reference="1dB-1P-uH2"/>
                                 <exclude reference="DTq-yW-6S0"/>
                                 <exclude reference="YbO-X1-pVm"/>
                                 <exclude reference="oxy-ui-rhY"/>
@@ -84,6 +108,7 @@
                     <connections>
                         <outlet property="button" destination="jsI-5t-y6P" id="mby-rH-Ugz"/>
                         <outlet property="map" destination="j10-c2-bqs" id="uGc-mO-4R1"/>
+                        <outlet property="pause" destination="lMg-tN-XdG" id="lg9-6G-gzq"/>
                         <outlet property="picker" destination="0Nb-n1-arK" id="MZR-s0-95C"/>
                     </connections>
                 </viewController>
